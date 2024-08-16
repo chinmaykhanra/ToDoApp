@@ -1,0 +1,127 @@
+{% extends "base.html" %}
+
+{% block title %}
+To Do List
+{% endblock title %}
+
+{% block body %}
+<section>
+    <div class="containeer">
+        <div class="work">
+            <h1>Due Task</h1>
+            <table class="padding-table-columns">
+                <thead>
+                    <tr>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for tasks  in  task%}
+                    {% if not tasks.complete  %}
+                    <tr>
+                        <td><form action="{% url 'task:completeTask' tasks.task_id %}" method="POST">
+                            {% csrf_token %}
+                            <input type="checkbox" name="complete" onchange="this.form.submit()">
+                        </form></td>
+                        <td><p class="list-item" data-popup-id="popup-{{tasks.task_id}}">{{tasks.title}}<p></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td>
+                            <form action="{% url 'task:editTask' tasks.task_id %}" method="GET">
+                                {% csrf_token %}
+                                
+                                <button type="submit" class="btn btn-info">Edit</button>
+                            </form>
+                        </td>
+                        <div id="popup-{{tasks.task_id}}" class="popup"> 
+                            <div class="popup-content">
+                                <h1 style="color:green;">
+                                    {{tasks.title}}
+                                </h1>
+                                <p>{{tasks.description}}</p>
+                                <p>Due Date : {{tasks.due_date}}</p>
+                                <button class="closePopup">
+                                    Close
+                                </button>
+                            </div>
+                        </div>
+                    </tr>
+                    {% endif %}
+                    {% endfor %}
+
+                </tbody>
+            </table>
+            
+            <a href="/addtask" style="color:white;"><button class="btn btn-info">Add New Task</a>
+            
+            
+        </div>
+        <div class="work">
+            <h1>Complete</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                </thead>
+                <tbody>
+                   {% for tasks in  task%}
+                   {% if tasks.complete %}
+                   <tr>
+                    <td><p class="list-item" data-popup-id="popup-{{tasks.task_id}}" style="color:black; pointer:cursor;">{{tasks.title}}<p></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    </tr>
+            
+            
+            {% endif %}
+            {% endfor %}
+
+        </div>
+        
+
+    </div>
+</section>
+{% block script %}
+<script>
+    document.querySelectorAll('.list-item').forEach(item => {
+        item.addEventListener('click', function () {
+            var popupId = this.dataset.popupId;
+            document.getElementById(popupId).classList.add('show');
+        });
+    });
+    
+    document.querySelectorAll('.closePopup').forEach(button => {
+        button.addEventListener('click', function () {
+            this.parentElement.parentElement.classList.remove('show');
+        });
+    });
+    
+    window.addEventListener('click', function (event) {
+        if (event.target.classList.contains('popup')) {
+            event.target.classList.remove('show');
+        }
+    });
+    
+    
+    
+</script>
+{% endblock script %}
+{% endblock body %}
+
+
+
+
+

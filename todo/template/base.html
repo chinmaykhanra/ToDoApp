@@ -1,0 +1,125 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>
+    {% block title %}
+
+    {% endblock %}
+  </title>
+
+  <style>
+    {% block style %}
+
+      {% endblock style %}
+  </style>
+  <link rel="stylesheet" href="{% static 'css/style.css' %}" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Crimson+Pro">
+  <!-- Font Awesome -->
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet" />
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap" rel="stylesheet" />
+  <!-- MDB -->
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/7.1.0/mdb.min.css" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+</head>
+
+<body>
+  <div id="wrapper">
+    <div id="menuHolder">
+      <div role="navigation" class="sticky-top border-bottom border-top" id="mainNavigation">
+        <div class="flexMain">
+          <div class="flex2">
+            <button class="whiteLink siteLink" style="border-right:1px solid #eaeaea" onclick="menuToggle()"><i
+                class="fas fa-bars me-2"></i></button>
+          </div>
+          <div class="flex3 text-center" id="siteBrand">
+            <h1>To Do List</h1>
+          </div>
+          
+        <div class="flex2 text-end d-none d-md-block">
+          {% if  request.user.is_authenticated %}            
+          <button class="btn btn-primary btn-lg">Welcome {{user.username}}</button>
+        {% else %}
+          <a href="/login" style="color:white;"><button class="btn btn-primary btn-lg">Login</a>
+          {% comment %} <a href="/login"><button class="btn btn-success">Login</button></a> {% endcomment %}
+          {% endif %}
+        </div>
+        
+          
+        </div>
+      </div>
+
+      <div id="menuDrawer" class="d-flex flex-column flex-shrink-0 p-3 text-bg-dark">
+        <div>
+          <a href="/home" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-white
+            text-decoration-none">
+            <svg xmlns="http://www.w3.org/2000/svg" width="100" height="50" fill="currentColor" class="bi bi-chevron-double-down" viewBox="0 0 16 16">
+              <path fill-rule="evenodd" d="M1.646 6.646a.5.5 0 0 1 .708 0L8 12.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708"/>
+              <path fill-rule="evenodd" d="M1.646 2.646a.5.5 0 0 1 .708 0L8 8.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708"/>
+            </svg>
+            <span class="fs-4"></span></a>
+            <hr>
+          <a href="/home" class="nav-menu-item"><i class="fas fa-home me-3"></i>Home</a>
+          <a href="/calender" class="nav-menu-item"><i class="fas fa-calendar-alt me-3"></i>Calender</a>
+          <a href="/about" class="nav-menu-item"><i class="fas fa-info-circle me-3"></i>About Us</a>
+          <a href="/logout" class="nav-menu-item"><i class="fas fa-sign-out-alt me-3"></i>Logout</a>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- ======= Intro Section ======= -->
+  {% block intro %}{% endblock intro %}
+  <!-- End Intro Section -->
+  {% block body %}
+  {% endblock body %}
+
+  {% block content %}{% endblock content %}
+  <!-- MDB -->
+  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/7.1.0/mdb.umd.min.js"></script>
+
+  <script>
+    var menuHolder = document.getElementById('menuHolder')
+    var mainNavigation = document.getElementById('mainNavigation')
+    var body = document.body;
+    var container = document.querySelector('.containeer');
+
+    function menuToggle() {
+      if (menuHolder.className === "drawMenu") {
+        menuHolder.className = "";
+        mainNavigation.style.position = "";
+        body.style.marginLeft = "0"; // Reset the left margin of the body
+        container.style.width = "100%";
+      } else {
+        menuHolder.className = "drawMenu";
+        mainNavigation.style.position = "fixed";
+        mainNavigation.style.top = "0";
+        mainNavigation.style.width = "74.8%";
+        body.style.marginLeft = "100px"; // Set the left margin of the body equal to the width of the menu bar
+        container.style.width = "80%"; // Reduce the width of the container
+        container.style.marginLeft = "300px";
+        container.style.marginTop = "80px";
+        container.style.marginRight = "50px";
+      }
+    }
+
+    // Close the menu drawer when clicking outside of it
+    document.addEventListener('click', function (event) {
+      var isClickInsideMenu = menuHolder.contains(event.target);
+      var isClickInsideButton = mainNavigation.contains(event.target);
+
+      if (!isClickInsideMenu && !isClickInsideButton && menuHolder.className === "drawMenu") {
+        menuHolder.className = "";
+        mainNavigation.style.position = "";
+        body.style.marginLeft = "0"; // Reset the left margin of the body when clicking outside the menu
+        container.style.width = "100%"; // Reset the width of the container
+      }
+    });
+  </script>
+  {% block script %}{% endblock script %}
+</body>
+
+</html>
